@@ -11,25 +11,33 @@ class CoordinateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var provider = Provider.of<CoordinateProviders>(context);
     var coordinate = provider.coordinate;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text("Latitude: ${coordinate.latitude}", style: TextStyle(fontSize: 14),),
-        Text("Longitude: ${coordinate.longitude}", style: TextStyle(fontSize: 14),),
-        Text("Elevation: ${coordinate.elevation}", style: TextStyle(fontSize: 14),),
-        SizedBox(height: 10,),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(icon: Icon(Icons.add), onPressed: (){
-              provider.increment();
-            }),
-            IconButton(icon: Icon(Icons.remove), onPressed: (){
-              provider.decrement();
-            })
-          ],
-        )
-      ],
+    return Container(
+      width: double.infinity,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text("Latitude: ${coordinate.latitude}", style: TextStyle(fontSize: 14),),
+          Text("Longitude: ${coordinate.longitude}", style: TextStyle(fontSize: 14),),
+          Text("Altitude: ${coordinate.altitude}", style: TextStyle(fontSize: 14),),
+          SizedBox(height: 10,),
+          Container(
+            width: 300,
+            child: RaisedButton(
+              onPressed: (){
+                provider.fetchLocation();
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(Icons.location_on),
+                  Text("Fetch Location")
+                ],
+              )
+            ),
+          )
+        ],
+      ),
     );
   }
 }

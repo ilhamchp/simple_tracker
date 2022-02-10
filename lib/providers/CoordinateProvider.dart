@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:simple_tracker/models/coordinate.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:simple_tracker/utilities/locator.dart';
 
 class CoordinateProviders with ChangeNotifier{
-  Coordinate _coordinate = Coordinate(0, 0, 0);
+  Position _coordinate = Position();
 
-  Coordinate get coordinate => _coordinate;
+  Position get coordinate => _coordinate;
 
-  void increment(){
-    _coordinate.latitude += 1;
-    _coordinate.longitude += 1;
-    _coordinate.elevation += 1;
-    notifyListeners();
-  }
-
-  void decrement(){
-    _coordinate.latitude -= 1;
-    _coordinate.longitude -= 1;
-    _coordinate.elevation -= 1;
-    notifyListeners();
+  void fetchLocation() async {
+    var location = await Locator.determinePosition();
+    if (location != null) {
+      print(location);
+      _coordinate = location;
+      notifyListeners();
+    }
   }
 }
