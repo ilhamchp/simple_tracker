@@ -1,12 +1,8 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_tracker/models/coordinate.dart';
 import 'package:simple_tracker/providers/CoordinateProvider.dart';
-import 'package:simple_tracker/utilities/locator.dart' as MyLocator;
-import '../datasources/api_service.dart';
+import 'package:simple_tracker/providers/timer_provider.dart';
 
 class CoordinateWidget extends StatefulWidget {
   const CoordinateWidget({
@@ -18,19 +14,11 @@ class CoordinateWidget extends StatefulWidget {
 }
 
 class _CoordinateWidgetState extends State<CoordinateWidget> {
-  Timer _timer;
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<CoordinateProviders>(context);
-    var coordinate = provider.coordinate;
-    saveCoordinate(coordinate);
+    var coordProvider = Provider.of<CoordinateProviders>(context);
+    var timerProvider = Provider.of<TimerProvider>(context);
+    var coordinate = coordProvider.coordinate;
     return Container(
       width: double.infinity,
       child: Column(
@@ -45,7 +33,7 @@ class _CoordinateWidgetState extends State<CoordinateWidget> {
             width: 300,
             child: RaisedButton(
               onPressed: (){
-                provider.fetchLocation();
+                coordProvider.fetchLocation();
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -61,7 +49,7 @@ class _CoordinateWidgetState extends State<CoordinateWidget> {
             width: 300,
             child: RaisedButton(
               onPressed: (){
-                startTimer();
+                timerProvider.startTimer();
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -71,30 +59,25 @@ class _CoordinateWidgetState extends State<CoordinateWidget> {
                 ],
               )
             ),
+          ),
+          SizedBox(height: 10,),
+          Container(
+            width: 300,
+            child: RaisedButton(
+              onPressed: (){
+                timerProvider.stopTimer();
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(Icons.stop_outlined),
+                  Text("Stop Service")
+                ],
+              )
+            ),
           )
         ],
       ),
     );
-  }
-
-  void startTimer() async {
-    _timer = Timer.periodic(Duration(seconds: 30), (Timer t) async {
-      var location = await MyLocator.Locator.determinePosition();
-      if (location != null){
-        saveCoordinate(location);
-      }
-    });
-  }
-
-  void saveCoordinate(Position data) {
-    if (data.latitude == null || data.longitude == null) {
-      return;
-    }
-    var coordinate = Coordinate(
-      latitude: data.latitude,
-      longitude: data.longitude,
-      altitude: data.altitude
-    );
-    APIService.postSaveCoordinate(coordinate);
   }
 }
