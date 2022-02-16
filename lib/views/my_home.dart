@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_tracker/providers/CoordinateProvider.dart';
+import 'package:simple_tracker/providers/direction_providers.dart';
 import 'package:simple_tracker/providers/timer_provider.dart';
 import 'package:simple_tracker/widgets/coordinate_widget.dart';
 
@@ -15,6 +16,9 @@ class MyHome extends StatelessWidget {
         ChangeNotifierProvider<TimerProvider>(
           create: (_) => TimerProvider(),
         ),
+        ChangeNotifierProvider<DirectionProvider>(
+          create: (_) => DirectionProvider(),
+        )
       ],
       child: Scaffold(
         appBar: AppBar(title: Text("Simple Tracker"),),
